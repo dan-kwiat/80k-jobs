@@ -54,12 +54,26 @@ function fetcher(query: string, params: { limit: number }) {
   return sanityClient.fetch(query, params)
 }
 
-function JobsList() {
-  const { data: dynamicJobs } = useSWR<Array<Job>>(
-    [indexQuery, { limit: 20 }],
+function JobsList({ filters }: { filters: Array<FilterCategory> }) {
+  const { data: dynamicJobs, error } = useSWR<Array<Job>>(
+    [
+      indexQuery({ filters }),
+      {
+        limit: 20,
+      },
+    ],
     fetcher
   )
-  return (
+
+  // useEffect(() => {
+  //   if (dynamicJobs) {
+  //     window.scrollTo(0, 0)
+  //   }
+  // }, [dynamicJobs])
+
+  return error ? (
+    <div className="text-red-400">{JSON.stringify(error)}</div>
+  ) : (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">
         {dynamicJobs?.map((position) => (
@@ -122,6 +136,31 @@ function JobsList() {
 
 export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+
+  const [filterState, setFilterState] = useState(filters)
+
+  function toggle(filterType: FilterCategory["_type"], filterId: string) {
+    setFilterState((prevState) => {
+      const i = prevState.findIndex((x) => x._type === filterType)
+      const j = prevState[i].options.findIndex((x) => x._id === filterId)
+      return [
+        ...prevState.slice(0, i),
+        {
+          _type: filterType,
+          options: [
+            ...prevState[i].options.slice(0, j),
+            {
+              ...prevState[i].options[j],
+              selected: !prevState[i].options[j].selected,
+            },
+            ...prevState[i].options.slice(j + 1),
+          ],
+        },
+        ...prevState.slice(i + 1),
+      ]
+    })
+  }
+
   return (
     <div className="bg-white">
       <div>
@@ -171,7 +210,7 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
 
                   {/* Filters */}
                   <form className="mt-4">
-                    {filters.map((section) => (
+                    {filterState.map((section) => (
                       <Disclosure
                         as="div"
                         key={section._type}
@@ -207,7 +246,11 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                                         id={`${section._type}-${optionIdx}-mobile`}
                                         name={`${section._type}[]`}
                                         // id={option._id}
-                                        // defaultValue={option.name}
+                                        defaultValue={option.name}
+                                        checked={option.selected}
+                                        onChange={(e) =>
+                                          toggle(section._type, option._id)
+                                        }
                                         type="checkbox"
                                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                       />
@@ -264,7 +307,7 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
 
               <div className="hidden lg:block sticky top-0 max-h-screen overflow-auto px-2 py-12">
                 <form className="space-y-10 divide-y divide-gray-200">
-                  {filters.map((section, sectionIdx) => (
+                  {filterState.map((section, sectionIdx) => (
                     <div
                       key={section._type}
                       className={sectionIdx === 0 ? null : "pt-10"}
@@ -280,6 +323,10 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                                 id={`${section._type}-${optionIdx}`}
                                 name={`${section._type}[]`}
                                 // defaultValue={option.value}
+                                checked={option.selected}
+                                onChange={(e) =>
+                                  toggle(section._type, option._id)
+                                }
                                 type="checkbox"
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               />
@@ -301,7 +348,7 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
 
             {/* Product grid */}
             <div className="mt-6 lg:col-span-2 lg:mt-12 xl:col-span-3">
-              <JobsList />
+              <JobsList filters={filterState} />
             </div>
           </div>
         </main>

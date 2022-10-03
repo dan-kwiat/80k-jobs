@@ -49,7 +49,11 @@ export const getStaticProps: GetStaticProps<Props> = async ({ preview }) => {
     if (!newAgg[filter._type]) {
       newAgg[filter._type] = []
     }
-    newAgg[filter._type].push({ _id: filter._id, name: filter.name })
+    newAgg[filter._type].push({
+      _id: filter._id,
+      name: filter.name,
+      selected: false,
+    })
     return newAgg
   }, {} as { [key in FilterCategory["_type"]]: FilterCategory["options"] })
 

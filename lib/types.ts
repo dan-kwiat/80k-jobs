@@ -6,7 +6,7 @@ export interface Filter {
 
 export interface FilterCategory {
   _type: Filter["_type"]
-  options: Array<{ _id: string; name: string }>
+  options: Array<{ _id: string; name: string; selected: boolean }>
 }
 
 export interface Job {
