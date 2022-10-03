@@ -54,6 +54,43 @@ function fetcher(query: string, params: { limit: number }) {
   return sanityClient.fetch(query, params)
 }
 
+const dummyJob: Job = {
+  _id: "dummy-job",
+  countries: [{ name: "UK" }],
+  date_it_closes: "2022-10-03",
+  date_published: "2022-09-23",
+  description: [
+    {
+      _key: "VZ1EabbD",
+      _type: "block",
+      children: [
+        {
+          _key: "123",
+          _type: "span",
+          marks: [],
+          text: "Placeholder text",
+        },
+      ],
+      markDefs: [],
+      style: "normal",
+    },
+  ],
+  location: "London.UK",
+  org: "Organisation name",
+  orgs_home_page: "example.com",
+  orgs_logo: "",
+  orgs_vacancies_page: "",
+  problem_area_main: "A. Global health & poverty",
+  problem_area_others: "",
+  problem_areas: [{ name: "A. Global health & poverty" }],
+  required_degree: { name: "Master's degree" },
+  required_experience: { name: "5+ years of experience" },
+  role_type: "Operations",
+  roles: [{ name: "Operations" }],
+  title: "Placeholder job title",
+  vacancy_page: "example.com",
+}
+
 function JobsList({ filters }: { filters: Array<FilterCategory> }) {
   const { data: dynamicJobs, error } = useSWR<Array<Job>>(
     [
@@ -64,6 +101,7 @@ function JobsList({ filters }: { filters: Array<FilterCategory> }) {
     ],
     fetcher
   )
+  const loading = !dynamicJobs && !error
 
   // useEffect(() => {
   //   if (dynamicJobs) {
@@ -74,61 +112,67 @@ function JobsList({ filters }: { filters: Array<FilterCategory> }) {
   return error ? (
     <div className="text-red-400">{JSON.stringify(error)}</div>
   ) : (
-    <div className="overflow-hidden bg-white shadow sm:rounded-md">
+    <div
+      className={`overflow-hidden bg-white shadow sm:rounded-md ${
+        loading ? "blur-sm animate-pulse" : ""
+      }`}
+    >
       <ul role="list" className="divide-y divide-gray-200">
-        {dynamicJobs?.map((position) => (
-          <li key={position._id}>
-            <a
-              href={position.vacancy_page}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="block hover:bg-gray-50"
-            >
-              <div className="px-4 py-4 sm:px-6">
-                <div className="flex items-center justify-between">
-                  <p className="truncate text-sm font-medium text-indigo-600">
-                    {position.title}
-                  </p>
-                  <div className="ml-2 flex flex-shrink-0">
-                    <p className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                      {position.org}
+        {(loading ? new Array(10).fill(dummyJob) : dynamicJobs).map(
+          (position, index) => (
+            <li key={loading ? `dummy-${index}` : position._id}>
+              <a
+                href={position.vacancy_page}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="block hover:bg-gray-50"
+              >
+                <div className="px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <p className="truncate text-sm font-medium text-indigo-600">
+                      {position.title}
                     </p>
+                    <div className="ml-2 flex flex-shrink-0">
+                      <p className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                        {position.org}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="mt-2 sm:flex sm:justify-between">
-                  <div className="sm:flex">
-                    <p className="flex items-center text-sm text-gray-500">
-                      <UsersIcon
+                  <div className="mt-2 sm:flex sm:justify-between">
+                    <div className="sm:flex">
+                      <p className="flex items-center text-sm text-gray-500">
+                        <UsersIcon
+                          className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        {position.roles.map((x) => x.name).join(" / ")}
+                      </p>
+                      <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
+                        <MapPinIcon
+                          className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        {position.countries.map((x) => x.name).join(" / ")}
+                      </p>
+                    </div>
+                    <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                      <CalendarIcon
                         className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                         aria-hidden="true"
                       />
-                      {position.roles.map((x) => x.name).join(" / ")}
-                    </p>
-                    <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                      <MapPinIcon
-                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                        aria-hidden="true"
-                      />
-                      {position.countries.map((x) => x.name).join(" / ")}
-                    </p>
-                  </div>
-                  <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                    <CalendarIcon
-                      className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                      aria-hidden="true"
-                    />
-                    <p>
-                      Closing on{" "}
-                      <time dateTime={position.date_it_closes}>
-                        {position.date_it_closes}
-                      </time>
-                    </p>
+                      <p>
+                        Closing on{" "}
+                        <time dateTime={position.date_it_closes}>
+                          {position.date_it_closes}
+                        </time>
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
-          </li>
-        ))}
+              </a>
+            </li>
+          )
+        )}
       </ul>
     </div>
   )
