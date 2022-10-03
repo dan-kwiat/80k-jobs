@@ -4,6 +4,9 @@ import { XMarkIcon } from "@heroicons/react/24/outline"
 import { ChevronDownIcon, PlusIcon } from "@heroicons/react/20/solid"
 import { Job } from "lib/types"
 import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/20/solid"
+import { indexQuery } from "lib/queries"
+import { sanityClient } from "lib/sanity.client"
+import useSWR from "swr"
 
 const filters = [
   {
@@ -47,11 +50,19 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-function JobsList({ jobs }: { jobs: Array<Job> }) {
+function fetcher(query: string, params: { limit: number }) {
+  return sanityClient.fetch(query, params)
+}
+
+function JobsList() {
+  const { data: dynamicJobs } = useSWR<Array<Job>>(
+    [indexQuery, { limit: 20 }],
+    fetcher
+  )
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">
-        {jobs.map((position) => (
+        {dynamicJobs?.map((position) => (
           <li key={position._id}>
             <a
               href={position.vacancy_page}
@@ -109,7 +120,7 @@ function JobsList({ jobs }: { jobs: Array<Job> }) {
   )
 }
 
-export default function Jobs({ jobs }: { jobs: Array<Job> }) {
+export default function Jobs() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
   return (
@@ -290,7 +301,7 @@ export default function Jobs({ jobs }: { jobs: Array<Job> }) {
 
             {/* Product grid */}
             <div className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3">
-              <JobsList jobs={jobs} />
+              <JobsList />
             </div>
           </div>
         </main>
