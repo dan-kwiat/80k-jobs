@@ -43,4 +43,5 @@ next-env.d.ts
 studio/.env.development
 
 # Jobs data
-data-transform/data/*
+data-transform/data/**/*.csv
+data-transform/data/**/*.ndjson
