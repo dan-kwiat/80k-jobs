@@ -2,7 +2,7 @@ import fs from "fs"
 import { parse } from "csv-parse"
 import { parse as parseSync } from "csv-parse/sync"
 import type { Job } from "./types"
-import { dequote, filterId, snakeCase } from "./lib/format"
+import { dequote, filterId, padZeroes, snakeCase } from "./lib/format"
 
 const CSV_FILE = "./data/job.csv"
 const JSON_LINES_FILE = "./data/job.ndjson"
@@ -87,6 +87,13 @@ function transform(doc: Job) {
     ...doc,
     // _id: slugify(`${job.org}-${job.title}-${job.date_published}`),
     _type: "job",
+    // Mutate date fields
+    date_it_closes: doc.date_it_closes
+      ?.split("/")
+      .reverse()
+      .map((x) => padZeroes(x))
+      .join("-"),
+    date_published: doc.date_published?.split(" ")[0],
     // Mutate rich text field
     description: dequote(doc.description)
       .split("<br><br>")

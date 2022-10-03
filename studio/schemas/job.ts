@@ -30,13 +30,13 @@ export default {
     {
       name: "date_published",
       title: "Date Published",
-      type: "string",
+      type: "date",
       validation: (Rule) => Rule.required(),
     },
     {
       name: "date_it_closes",
       title: "Date It Closes",
-      type: "string",
+      type: "date",
       validation: (Rule) => Rule.required(),
     },
     {

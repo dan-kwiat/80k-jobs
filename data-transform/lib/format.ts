@@ -21,3 +21,11 @@ export function dequote(str: string): string {
   }
   return str
 }
+
+export function padZeroes(str: string, length: number = 2): string {
+  let paddedString = str
+  while (paddedString.length < length) {
+    paddedString = "0" + paddedString
+  }
+  return paddedString
+}
