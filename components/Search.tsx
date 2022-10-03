@@ -44,8 +44,8 @@ export default function Search({
       <div className="relative mt-1 flex items-center">
         <input
           type="text"
-          name="search"
-          id="search"
+          name="jobs-search"
+          id="jobs-search"
           placeholder="Search jobs, orgs, roles..."
           value={state}
           onChange={(e) => {

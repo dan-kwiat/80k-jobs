@@ -9,6 +9,7 @@ import { sanityClient } from "lib/sanity.client"
 import useSWR from "swr"
 import Search from "./Search"
 import { FaceFrownIcon } from "@heroicons/react/24/outline"
+import Image from "next/image"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -57,6 +58,8 @@ const dummyJob: Job = {
   vacancy_page: "example.com",
 }
 
+const dummyJobs = new Array(10).fill(dummyJob) as Array<Job>
+
 function JobsList({
   filters,
   searchText,
@@ -92,61 +95,71 @@ function JobsList({
         }`}
       >
         <ul role="list" className="divide-y divide-gray-200">
-          {(loading ? new Array(10).fill(dummyJob) : dynamicJobs).map(
-            (position, index) => (
-              <li key={loading ? `dummy-${index}` : position._id}>
-                <a
-                  href={position.vacancy_page}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="block hover:bg-gray-50"
-                >
-                  <div className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <p className="truncate text-sm font-medium text-gray-700">
-                        {position.title}
+          {(loading ? dummyJobs : dynamicJobs).map((position, index) => (
+            <li key={loading ? `dummy-${index}` : position._id}>
+              <a
+                href={position.vacancy_page}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="block hover:bg-gray-50"
+              >
+                <div className="px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <p className="truncate text-sm font-medium text-gray-700">
+                      {position.title}
+                    </p>
+                    <div className="ml-2 flex flex-shrink-0">
+                      <p className="inline-flex rounded-full bg-cyan-100 px-2 text-xs font-semibold leading-5 text-cyan-800">
+                        {position.org}
                       </p>
-                      <div className="ml-2 flex flex-shrink-0">
-                        <p className="inline-flex rounded-full bg-cyan-100 px-2 text-xs font-semibold leading-5 text-cyan-800">
-                          {position.org}
-                        </p>
-                      </div>
                     </div>
-                    <div className="mt-2 sm:flex sm:justify-between">
-                      <div className="sm:flex">
-                        <p className="flex items-center text-sm text-gray-500">
-                          <UsersIcon
-                            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                            aria-hidden="true"
-                          />
-                          {position.roles.map((x) => x.name).join(" / ")}
-                        </p>
-                        <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                          <MapPinIcon
-                            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                            aria-hidden="true"
-                          />
-                          {position.countries.map((x) => x.name).join(" / ")}
-                        </p>
-                      </div>
-                      <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                        <CalendarIcon
+                  </div>
+                  <div className="mt-2 sm:flex sm:justify-between">
+                    <div className="sm:flex">
+                      <p className="flex items-center text-sm text-gray-500">
+                        <UsersIcon
                           className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                           aria-hidden="true"
                         />
-                        <p>
-                          Closing on{" "}
-                          <time dateTime={position.date_it_closes}>
-                            {position.date_it_closes}
-                          </time>
-                        </p>
-                      </div>
+                        {position.roles.map((x) => x.name).join(" / ")}
+                      </p>
+                      <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
+                        <MapPinIcon
+                          className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        {position.countries.map((x) => x.name).join(" / ")}
+                      </p>
+                    </div>
+                    <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                      <CalendarIcon
+                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      <p>
+                        Closing on{" "}
+                        <time dateTime={position.date_it_closes}>
+                          {position.date_it_closes}
+                        </time>
+                      </p>
                     </div>
                   </div>
-                </a>
-              </li>
-            )
-          )}
+                  <div className="mt-4 flex justify-between space-x-2">
+                    <div className="text-sm text-gray-500 line-clamp-2">
+                      {position.description.map((x) => (
+                        <p key={x._key}>
+                          {x.children.map((y) => y.text).join("")}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="flex-shrink-0 rounded-full overflow-hidden w-8 h-8 shadow">
+                      <Image src={position.orgs_logo} width={32} height={32} />
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
       {empty ? (
