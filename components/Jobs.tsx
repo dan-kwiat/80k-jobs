@@ -7,44 +7,7 @@ import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/20/solid"
 import { indexQuery } from "lib/queries"
 import { sanityClient } from "lib/sanity.client"
 import useSWR from "swr"
-
-const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White" },
-      { value: "beige", label: "Beige" },
-      { value: "blue", label: "Blue" },
-      { value: "brown", label: "Brown" },
-      { value: "green", label: "Green" },
-      { value: "purple", label: "Purple" },
-    ],
-  },
-  {
-    id: "category",
-    name: "Category",
-    options: [
-      { value: "new-arrivals", label: "All New Arrivals" },
-      { value: "tees", label: "Tees" },
-      { value: "crewnecks", label: "Crewnecks" },
-      { value: "sweatshirts", label: "Sweatshirts" },
-      { value: "pants-shorts", label: "Pants & Shorts" },
-    ],
-  },
-  {
-    id: "sizes",
-    name: "Sizes",
-    options: [
-      { value: "xs", label: "XS" },
-      { value: "s", label: "S" },
-      { value: "m", label: "M" },
-      { value: "l", label: "L" },
-      { value: "xl", label: "XL" },
-      { value: "2xl", label: "2XL" },
-    ],
-  },
-]
+import Search from "./Search"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -91,10 +54,16 @@ const dummyJob: Job = {
   vacancy_page: "example.com",
 }
 
-function JobsList({ filters }: { filters: Array<FilterCategory> }) {
+function JobsList({
+  filters,
+  searchText,
+}: {
+  filters: Array<FilterCategory>
+  searchText: string
+}) {
   const { data: dynamicJobs, error } = useSWR<Array<Job>>(
     [
-      indexQuery({ filters }),
+      indexQuery({ filters, searchText }),
       {
         limit: 20,
       },
@@ -129,11 +98,11 @@ function JobsList({ filters }: { filters: Array<FilterCategory> }) {
               >
                 <div className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
-                    <p className="truncate text-sm font-medium text-indigo-600">
+                    <p className="truncate text-sm font-medium text-gray-700">
                       {position.title}
                     </p>
                     <div className="ml-2 flex flex-shrink-0">
-                      <p className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                      <p className="inline-flex rounded-full bg-cyan-100 px-2 text-xs font-semibold leading-5 text-cyan-800">
                         {position.org}
                       </p>
                     </div>
@@ -180,6 +149,8 @@ function JobsList({ filters }: { filters: Array<FilterCategory> }) {
 
 export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+
+  const [searchText, setSearchText] = useState("")
 
   const [filterState, setFilterState] = useState(filters)
 
@@ -322,13 +293,18 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
         </Transition.Root>
 
         <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-          <div className="border-b border-gray-200 pb-10">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              80,000 Hours Jobs
-            </h1>
-            <p className="mt-4 text-base text-gray-500">
-              Checkout out the latest opportunities
-            </p>
+          <div className="border-b border-gray-200 pb-10 flex justify-between items-end">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+                80,000 Hours Jobs
+              </h1>
+              <p className="mt-4 text-base text-gray-500">
+                Checkout out the latest opportunities
+              </p>
+            </div>
+            <div className="w-full max-w-sm">
+              <Search onSearch={(x) => setSearchText(x)} />
+            </div>
           </div>
 
           <div className="pt-12 lg:pt-0 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
@@ -390,9 +366,9 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
               </div>
             </aside>
 
-            {/* Product grid */}
+            {/* Jobs List */}
             <div className="mt-6 lg:col-span-2 lg:mt-12 xl:col-span-3">
-              <JobsList filters={filterState} />
+              <JobsList filters={filterState} searchText={searchText} />
             </div>
           </div>
         </main>

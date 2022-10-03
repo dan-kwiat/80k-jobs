@@ -75,10 +75,20 @@ function getFilterStringArray(
   return ""
 }
 
-export function indexQuery({ filters }: { filters: Array<FilterCategory> }) {
+export function indexQuery({
+  filters,
+  searchText,
+}: {
+  filters: Array<FilterCategory>
+  searchText: string
+}) {
   let today = new Date().toISOString().split("T")[0]
-  let filterString = `_type == "job" && date_it_closes >= '${today}'`
+  let filterString = `_type == "job" && [title, org, role_type, problem_areas, location, ...description[].children[].text] match [${searchText
+    .split(" ")
+    .map((x) => `"${x}*"`)
+    .join(", ")}] && date_it_closes >= '${today}'`
 
+  console.log(filterString)
   filterString += getFilterStringScalar(
     filters,
     "experience",
