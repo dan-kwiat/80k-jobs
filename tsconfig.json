@@ -16,6 +16,6 @@
     "baseUrl": ".",
     "incremental": true
   },
-  "exclude": ["node_modules", "wip", "notes", "scripts"],
+  "exclude": ["node_modules", "notes", "data-transform", "studio"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }
