@@ -18,6 +18,8 @@ function fetcher(query: string, params: { limit: number }) {
   return sanityClient.fetch(query, params)
 }
 
+const LIMIT = 20
+
 const dummyJob: Job = {
   _id: "dummy-job",
   countries: [{ name: "UK" }],
@@ -66,7 +68,7 @@ function JobsList({
     [
       indexQuery({ filters, searchText }),
       {
-        limit: 20,
+        limit: LIMIT,
       },
     ],
     fetcher
@@ -154,6 +156,23 @@ function JobsList({
             Sorry, we can't find any matching jobs
           </div>
         </div>
+      ) : null}
+      {dynamicJobs && dynamicJobs.length > 0 ? (
+        dynamicJobs.length < LIMIT ? (
+          <div className="mt-8 flex justify-center text-gray-700">
+            <div>End of results</div>
+          </div>
+        ) : (
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              className="cursor-not-allowed opacity-50 inline-flex items-center rounded-md border border-transparent bg-cyan-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+              disabled
+            >
+              Show more
+            </button>
+          </div>
+        )
       ) : null}
     </div>
   )
@@ -279,7 +298,7 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                                           toggle(section._type, option._id)
                                         }
                                         type="checkbox"
-                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
                                       />
                                       <label
                                         // htmlFor={option._id}
@@ -305,16 +324,26 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
         </Transition.Root>
 
         <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-          <div className="border-b border-gray-200 pb-10 flex justify-between items-end">
+          <div className="border-b border-gray-200 pb-10 lg:flex lg:justify-between lg:items-end">
             <div>
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
                 80,000 Hours Jobs
               </h1>
               <p className="mt-4 text-base text-gray-500">
-                Checkout out the latest opportunities
+                Checkout out the latest opportunities. Or{" "}
+                <a
+                  href="https://jobs-board.sanity.studio/desk/job"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-cyan-600"
+                >
+                  create your own in Sanity studio
+                </a>
+                ...
               </p>
+              <p className="mt-2 text-base text-gray-500"></p>
             </div>
-            <div className="w-full max-w-sm">
+            <div className="mt-6 lg:mt-0 lg:ml-24 w-full lg:max-w-sm">
               <Search onSearch={(x) => setSearchText(x)} />
             </div>
           </div>
@@ -360,7 +389,7 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                                   toggle(section._type, option._id)
                                 }
                                 type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
                               />
                               <label
                                 htmlFor={`${section._type}-${optionIdx}`}

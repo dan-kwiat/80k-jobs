@@ -52,7 +52,7 @@ export default function Search({
             setState(e.currentTarget.value)
             onChange()
           }}
-          className="block w-full rounded-md border-gray-300 pr-12 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="block w-full rounded-md border-gray-300 pr-12 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
         />
         <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
           <MagnifyingGlassIcon className="h-6 w-6 text-gray-700" />
