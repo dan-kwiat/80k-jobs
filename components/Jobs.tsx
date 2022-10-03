@@ -2,7 +2,7 @@ import { Fragment, useState } from "react"
 import { Dialog, Disclosure, Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { ChevronDownIcon, PlusIcon } from "@heroicons/react/20/solid"
-import { Job } from "lib/types"
+import { FilterCategory, Job } from "lib/types"
 import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/20/solid"
 import { indexQuery } from "lib/queries"
 import { sanityClient } from "lib/sanity.client"
@@ -120,9 +120,8 @@ function JobsList() {
   )
 }
 
-export default function Jobs() {
+export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-
   return (
     <div className="bg-white">
       <div>
@@ -175,7 +174,7 @@ export default function Jobs() {
                     {filters.map((section) => (
                       <Disclosure
                         as="div"
-                        key={section.name}
+                        key={section._type}
                         className="border-t border-gray-200 pt-4 pb-4"
                       >
                         {({ open }) => (
@@ -183,7 +182,7 @@ export default function Jobs() {
                             <legend className="w-full px-2">
                               <Disclosure.Button className="flex w-full items-center justify-between p-2 text-gray-400 hover:text-gray-500">
                                 <span className="text-sm font-medium text-gray-900">
-                                  {section.name}
+                                  {section._type}
                                 </span>
                                 <span className="ml-6 flex h-7 items-center">
                                   <ChevronDownIcon
@@ -198,26 +197,30 @@ export default function Jobs() {
                             </legend>
                             <Disclosure.Panel className="px-4 pt-4 pb-2">
                               <div className="space-y-6">
-                                {section.options.map((option, optionIdx) => (
-                                  <div
-                                    key={option.value}
-                                    className="flex items-center"
-                                  >
-                                    <input
-                                      id={`${section.id}-${optionIdx}-mobile`}
-                                      name={`${section.id}[]`}
-                                      defaultValue={option.value}
-                                      type="checkbox"
-                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                    />
-                                    <label
-                                      htmlFor={`${section.id}-${optionIdx}-mobile`}
-                                      className="ml-3 text-sm text-gray-500"
+                                {section.options.map((option, optionIdx) => {
+                                  return (
+                                    <div
+                                      key={option._id}
+                                      className="flex items-center"
                                     >
-                                      {option.label}
-                                    </label>
-                                  </div>
-                                ))}
+                                      <input
+                                        id={`${section._type}-${optionIdx}-mobile`}
+                                        name={`${section._type}[]`}
+                                        // id={option._id}
+                                        // defaultValue={option.name}
+                                        type="checkbox"
+                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                      />
+                                      <label
+                                        // htmlFor={option._id}
+                                        htmlFor={`${section._type}-${optionIdx}-mobile`}
+                                        className="ml-3 text-sm text-gray-500"
+                                      >
+                                        {option.name}
+                                      </label>
+                                    </div>
+                                  )
+                                })}
                               </div>
                             </Disclosure.Panel>
                           </fieldset>
@@ -241,7 +244,7 @@ export default function Jobs() {
             </p>
           </div>
 
-          <div className="pt-12 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
+          <div className="pt-12 lg:pt-0 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
             <aside>
               <h2 className="sr-only">Filters</h2>
 
@@ -259,35 +262,32 @@ export default function Jobs() {
                 />
               </button>
 
-              <div className="hidden lg:block sticky top-12">
+              <div className="hidden lg:block sticky top-0 max-h-screen overflow-auto px-2 py-12">
                 <form className="space-y-10 divide-y divide-gray-200">
                   {filters.map((section, sectionIdx) => (
                     <div
-                      key={section.name}
+                      key={section._type}
                       className={sectionIdx === 0 ? null : "pt-10"}
                     >
                       <fieldset>
                         <legend className="block text-sm font-medium text-gray-900">
-                          {section.name}
+                          {section._type}
                         </legend>
                         <div className="space-y-3 pt-6">
                           {section.options.map((option, optionIdx) => (
-                            <div
-                              key={option.value}
-                              className="flex items-center"
-                            >
+                            <div key={option._id} className="flex items-center">
                               <input
-                                id={`${section.id}-${optionIdx}`}
-                                name={`${section.id}[]`}
-                                defaultValue={option.value}
+                                id={`${section._type}-${optionIdx}`}
+                                name={`${section._type}[]`}
+                                // defaultValue={option.value}
                                 type="checkbox"
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               />
                               <label
-                                htmlFor={`${section.id}-${optionIdx}`}
+                                htmlFor={`${section._type}-${optionIdx}`}
                                 className="ml-3 text-sm text-gray-600"
                               >
-                                {option.label}
+                                {option.name}
                               </label>
                             </div>
                           ))}
@@ -300,7 +300,7 @@ export default function Jobs() {
             </aside>
 
             {/* Product grid */}
-            <div className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3">
+            <div className="mt-6 lg:col-span-2 lg:mt-12 xl:col-span-3">
               <JobsList />
             </div>
           </div>

@@ -1,3 +1,14 @@
+export interface Filter {
+  _id: string
+  _type: "area" | "experience" | "location" | "qualification" | "role"
+  name: string
+}
+
+export interface FilterCategory {
+  _type: Filter["_type"]
+  options: Array<{ _id: string; name: string }>
+}
+
 export interface Job {
   _id: string
   countries: Array<{

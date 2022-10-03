@@ -1,16 +1,17 @@
 import Head from "next/head"
 import Layout from "../components/layout"
-import { indexQuery } from "../lib/queries"
-import { getClient, overlayDrafts } from "../lib/sanity.server"
+import { filtersQuery } from "../lib/queries"
+import { getClient } from "../lib/sanity.server"
 import Jobs from "../components/Jobs"
-import { Job } from "lib/types"
+import { Filter, FilterCategory } from "lib/types"
+import { GetStaticProps } from "next"
 
 interface Props {
-  jobs: Array<Job>
+  filters: Array<FilterCategory>
   preview: boolean
 }
 
-export default function Index({ jobs, preview }: Props) {
+export default function Index({ filters, preview }: Props) {
   // const { data: dynamicJobs } = usePreviewSubscription(indexQuery, {
   //   params: { limit: 5 },
   //   initialData: jobs,
@@ -22,7 +23,7 @@ export default function Index({ jobs, preview }: Props) {
         <Head>
           <title>Jobs | 80,000 Hours</title>
         </Head>
-        <Jobs />
+        <Jobs filters={filters} />
         {/* <Container>
           <Intro />
           {heroPost && (
@@ -41,13 +42,33 @@ export default function Index({ jobs, preview }: Props) {
     </>
   )
 }
+export const getStaticProps: GetStaticProps<Props> = async ({ preview }) => {
+  const filters = await getClient(preview).fetch<Array<Filter>>(filtersQuery)
+  const filterCategoriesDict = filters.reduce((agg, filter) => {
+    let newAgg = { ...agg }
+    if (!newAgg[filter._type]) {
+      newAgg[filter._type] = []
+    }
+    newAgg[filter._type].push({ _id: filter._id, name: filter.name })
+    return newAgg
+  }, {} as { [key in FilterCategory["_type"]]: FilterCategory["options"] })
 
-export async function getStaticProps({ preview = false }) {
-  const jobs = overlayDrafts(
-    await getClient(preview).fetch(indexQuery, { limit: 20 })
+  const filterCategoriesArr: Array<FilterCategory> = Object.keys(
+    filterCategoriesDict
   )
+    .map((filterType: FilterCategory["_type"]) => {
+      return {
+        _type: filterType,
+        options: filterCategoriesDict[filterType],
+      }
+    })
+    .sort((a, b) => a.options.length - b.options.length)
+
   return {
-    props: { jobs, preview },
+    props: {
+      filters: filterCategoriesArr,
+      preview: !!preview,
+    },
     // If webhooks isn't setup then attempt to re-generate in 1 minute intervals
     revalidate: process.env.SANITY_REVALIDATE_SECRET ? undefined : 60,
   }
