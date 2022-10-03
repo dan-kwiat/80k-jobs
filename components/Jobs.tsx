@@ -153,7 +153,13 @@ function JobsList({
                       ))}
                     </div>
                     <div className="flex-shrink-0 rounded-full overflow-hidden w-8 h-8 shadow bg-gray-300">
-                      <Image src={position.orgs_logo} width={32} height={32} />
+                      {position.orgs_logo ? (
+                        <Image
+                          src={position.orgs_logo}
+                          width={32}
+                          height={32}
+                        />
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -339,10 +345,10 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
         <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
           <div className="border-b border-gray-200 pb-10 lg:flex lg:justify-between lg:items-end">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                80,000 Hours Jobs
+              <h1 className="text-4xl lg:text-7xl font-bold tracking-tight text-gray-900">
+                Current Jobs
               </h1>
-              <p className="mt-4 text-base text-gray-500">
+              <p className="mt-4 lg:mt-8 text-base text-gray-500">
                 Checkout out the latest opportunities. Or{" "}
                 <a
                   href="https://jobs-board.sanity.studio/desk/job"
@@ -419,7 +425,6 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                 </form>
               </div>
             </aside>
-
             {/* Jobs List */}
             <div className="mt-6 lg:col-span-2 lg:mt-12 xl:col-span-3">
               <JobsList filters={filterState} searchText={searchText} />

@@ -5,6 +5,7 @@ import { getClient } from "../lib/sanity.server"
 import Jobs from "../components/Jobs"
 import { Filter, FilterCategory } from "lib/types"
 import { GetStaticProps } from "next"
+import NavBar from "components/navbar"
 
 interface Props {
   filters: Array<FilterCategory>
@@ -23,6 +24,7 @@ export default function Index({ filters, preview }: Props) {
         <Head>
           <title>Jobs | 80,000 Hours</title>
         </Head>
+        <NavBar />
         <Jobs filters={filters} />
         {/* <Container>
           <Intro />
