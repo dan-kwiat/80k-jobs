@@ -248,7 +248,7 @@ export default function Jobs({ jobs }: { jobs: Array<Job> }) {
                 />
               </button>
 
-              <div className="hidden lg:block">
+              <div className="hidden lg:block sticky top-12">
                 <form className="space-y-10 divide-y divide-gray-200">
                   {filters.map((section, sectionIdx) => (
                     <div
