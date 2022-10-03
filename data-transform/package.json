@@ -1,0 +1,22 @@
+{
+  "name": "80k-demo",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@sanity/client": "^3.4.1",
+    "@tsconfig/node18-strictest-esm": "^1.0.1",
+    "@types/node": "^18.7.23",
+    "csv-parse": "^5.3.0",
+    "dotenv": "^16.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "write-jobs": "ts-node ./write-jobs.ts",
+    "delete-docs": "ts-node ./delete-docs.ts",
+    "write-filters": "ts-node ./write-filters.ts"
+  },
+  "type": "module"
+}
