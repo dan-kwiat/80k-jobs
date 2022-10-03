@@ -1,5 +1,11 @@
 # Sanity Studio
 
+## Setup
+
+1. `yarn` to install packages
+2. `cp .env.development.example .env.development` then fill in the values in
+   `.env.development` (or run script to automate this)
+
 ## Upload data
 
 Run these one by one from the command line. Make sure you've already written the
