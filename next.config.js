@@ -5,6 +5,7 @@ module.exports = {
       { hostname: "cdn.sanity.io" },
       { hostname: "source.unsplash.com" },
       { hostname: "80000hours.org" },
+      { hostname: "cdn.80000hours.org" },
     ],
   },
 }

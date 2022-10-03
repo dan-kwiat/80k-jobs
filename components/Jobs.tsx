@@ -35,7 +35,7 @@ const dummyJob: Job = {
           _key: "123",
           _type: "span",
           marks: [],
-          text: "Placeholder text",
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         },
       ],
       markDefs: [],
@@ -152,7 +152,7 @@ function JobsList({
                         </p>
                       ))}
                     </div>
-                    <div className="flex-shrink-0 rounded-full overflow-hidden w-8 h-8 shadow">
+                    <div className="flex-shrink-0 rounded-full overflow-hidden w-8 h-8 shadow bg-gray-300">
                       <Image src={position.orgs_logo} width={32} height={32} />
                     </div>
                   </div>
