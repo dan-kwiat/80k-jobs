@@ -259,8 +259,17 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
   }
 
   return (
-    <div className="bg-white">
-      <div>
+    <div className="bg-white relative">
+      <div className="absolute inset-x-0 h-72">
+        <Image
+          src="https://80000hours.org/wp-content/uploads/2020/02/job-board-library-compressed-1440x830.jpg"
+          layout="fill"
+          objectFit="cover"
+        />
+        <div className="bg-gradient-to-b from-white/10 to-white absolute inset-0"></div>
+      </div>
+
+      <div className="relative">
         {/* Mobile filter dialog */}
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
           <Dialog
@@ -318,7 +327,7 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                             <legend className="w-full px-2">
                               <Disclosure.Button className="flex w-full items-center justify-between p-2 text-gray-400 hover:text-gray-500">
                                 <span className="text-sm font-medium text-gray-900">
-                                  {section._type}
+                                  {section._type.toUpperCase()}
                                 </span>
                                 <span className="ml-6 flex h-7 items-center">
                                   <ChevronDownIcon
@@ -380,21 +389,20 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
               <h1 className="text-4xl lg:text-7xl font-bold tracking-tight text-gray-900">
                 Current Jobs
               </h1>
-              <p className="mt-4 lg:mt-8 text-base text-gray-500">
+              <p className="bg-white/50 p-2 rounded mt-4 lg:mt-8 text-base text-gray-700">
                 Checkout out the latest opportunities. Or{" "}
                 <a
                   href="https://jobs-board.sanity.studio/desk/job"
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="text-cyan-600"
+                  className="text-cyan-700"
                 >
                   create your own in Sanity studio
                 </a>
                 ...
               </p>
-              <p className="mt-2 text-base text-gray-500"></p>
             </div>
-            <div className="mt-6 lg:mt-0 lg:ml-24 w-full lg:max-w-sm">
+            <div className="mt-6 lg:mt-0 lg:ml-24 w-full lg:max-w-sm shadow-lg">
               <Search onSearch={(x) => setSearchText(x)} />
             </div>
           </div>
@@ -436,7 +444,7 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                         <fieldset>
                           <div className="flex justify-between items-center">
                             <legend className="block text-sm font-medium text-gray-900">
-                              {section._type}
+                              {section._type.toUpperCase()}
                             </legend>
                             {numSectionFilters > 0 ? (
                               <button
