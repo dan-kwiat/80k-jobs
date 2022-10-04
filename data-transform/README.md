@@ -37,3 +37,8 @@ This script will:
 ```bash
 yarn write-filters
 ```
+
+## Upload Data
+
+To upload the data to Sanity studio, see the scripts in
+[../studio/README.md](../studio/README.md)
