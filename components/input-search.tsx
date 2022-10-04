@@ -25,6 +25,7 @@ export default function Search({
 }: {
   onSearch: (x: string) => void
 }) {
+  const inputRef = useRef<HTMLInputElement>()
   const [state, setState] = useState("")
 
   const onChange = useDebounce(() => {
@@ -36,6 +37,9 @@ export default function Search({
       onSubmit={(e) => {
         e.preventDefault()
         onSearch(state)
+        if (inputRef.current) {
+          inputRef.current.blur()
+        }
       }}
     >
       <label htmlFor="search" className="sr-only">
@@ -43,6 +47,7 @@ export default function Search({
       </label>
       <div className="relative mt-1 flex items-center">
         <input
+          ref={inputRef}
           type="text"
           name="jobs-search"
           id="jobs-search"
