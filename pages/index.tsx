@@ -1,7 +1,7 @@
 import Head from "next/head"
 import { filtersQuery } from "../lib/queries"
 import { getClient } from "../lib/sanity.server"
-import Jobs from "../components/jobs"
+import Jobs from "../components/filter-list"
 import { Filter, FilterCategory } from "lib/types"
 import { GetStaticProps } from "next"
 import NavBar from "components/navbar"
