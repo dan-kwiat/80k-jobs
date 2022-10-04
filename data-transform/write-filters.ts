@@ -1,6 +1,6 @@
 import fs from "fs"
 import readline from "readline"
-import { filterId } from "./lib/format"
+import { filterId, getDomain } from "./lib/format"
 import type { Job } from "./types"
 
 const JSON_LINES_FILE = "./data/job.ndjson"
@@ -47,6 +47,20 @@ function writeDocs(typeName: string, set: Set<string>) {
   )
 }
 
+function validateLogoImageDomains(domains: Set<string>) {
+  if (
+    domains.size !== 2 ||
+    !domains.has("80000hours.or") ||
+    !domains.has("cdn.80000hours.org")
+  ) {
+    throw new Error(
+      `Logo image hostnames need editing in '80k-jobs/next.config.js'. New hostnames: ${JSON.stringify(
+        Array.from(domains)
+      )}`
+    )
+  }
+}
+
 async function main() {
   const jobs = await getJobs()
 
@@ -56,16 +70,20 @@ async function main() {
   let area = new Set<string>()
   let location = new Set<string>()
 
+  let logoDomain = new Set<string>()
+
   jobs.forEach((job) => {
     // One per job:
     experience.add(job.required_experience)
     qualification.add(job.required_degree)
+    logoDomain.add(getDomain(job.orgs_logo))
     // Many per job:
     job.roles.forEach((x) => role.add(x))
     job.problem_areas.forEach((x) => area.add(x))
     job.countries.forEach((x) => location.add(x))
   })
 
+  validateLogoImageDomains(logoDomain)
   writeDocs("experience", experience)
   writeDocs("qualification", qualification)
   writeDocs("role", role)

@@ -29,3 +29,9 @@ export function padZeroes(str: string, length: number = 2): string {
   }
   return paddedString
 }
+
+export function getDomain(url: string): string {
+  let arr = url?.split("://") ?? null
+  let domain = arr[arr.length - 1]?.split("/")[0]?.split("?")[0]
+  return domain ?? ""
+}
