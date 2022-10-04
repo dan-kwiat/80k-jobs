@@ -16,9 +16,6 @@ export default function Index({ filters }: Props) {
   return (
     <div className="min-h-screen">
       <Meta />
-      <Head>
-        <title>Jobs | 80,000 Hours</title>
-      </Head>
       <NavBar />
       <Jobs filters={filters} />
     </div>
