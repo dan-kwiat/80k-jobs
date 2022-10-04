@@ -56,16 +56,16 @@ export default function Jobs({ filters }: { filters: Array<FilterCategory> }) {
                 Current Jobs
               </h1>
               <p className="bg-white/50 p-2 rounded mt-4 lg:mt-8 text-base text-gray-700">
-                Checkout out the latest opportunities. Or{" "}
+                Check out out the latest opportunities, or{" "}
                 <a
                   href="https://jobs-board.sanity.studio/desk/job"
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="text-cyan-700"
+                  className="text-cyan-600 hover:text-cyan-700 font-semibold"
                 >
-                  create your own in Sanity studio
-                </a>
-                ...
+                  create your own
+                </a>{" "}
+                in Sanity studio...
               </p>
             </div>
             <div className="mt-6 lg:mt-0 lg:ml-24 w-full lg:max-w-sm shadow-lg">
