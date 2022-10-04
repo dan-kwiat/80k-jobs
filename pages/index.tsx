@@ -1,47 +1,27 @@
 import Head from "next/head"
-import Layout from "../components/layout"
 import { filtersQuery } from "../lib/queries"
 import { getClient } from "../lib/sanity.server"
-import Jobs from "../components/Jobs"
+import Jobs from "../components/jobs"
 import { Filter, FilterCategory } from "lib/types"
 import { GetStaticProps } from "next"
 import NavBar from "components/navbar"
+import Meta from "components/meta"
 
 interface Props {
   filters: Array<FilterCategory>
   preview: boolean
 }
 
-export default function Index({ filters, preview }: Props) {
-  // const { data: dynamicJobs } = usePreviewSubscription(indexQuery, {
-  //   params: { limit: 5 },
-  //   initialData: jobs,
-  //   enabled: true, //preview,
-  // })
+export default function Index({ filters }: Props) {
   return (
-    <>
-      <Layout preview={preview}>
-        <Head>
-          <title>Jobs | 80,000 Hours</title>
-        </Head>
-        <NavBar />
-        <Jobs filters={filters} />
-        {/* <Container>
-          <Intro />
-          {heroPost && (
-            <HeroPost
-              title={heroPost.title}
-              coverImage={heroPost.coverImage}
-              date={heroPost.date}
-              author={heroPost.author}
-              slug={heroPost.slug}
-              excerpt={heroPost.excerpt}
-            />
-          )}
-          {morePosts.length > 0 && <MoreStories posts={morePosts} />}
-        </Container> */}
-      </Layout>
-    </>
+    <div className="min-h-screen">
+      <Meta />
+      <Head>
+        <title>Jobs | 80,000 Hours</title>
+      </Head>
+      <NavBar />
+      <Jobs filters={filters} />
+    </div>
   )
 }
 export const getStaticProps: GetStaticProps<Props> = async ({ preview }) => {
@@ -76,6 +56,6 @@ export const getStaticProps: GetStaticProps<Props> = async ({ preview }) => {
       preview: !!preview,
     },
     // If webhooks isn't setup then attempt to re-generate in 1 minute intervals
-    revalidate: process.env.SANITY_REVALIDATE_SECRET ? undefined : 60,
+    // revalidate: process.env.SANITY_REVALIDATE_SECRET ? undefined : 60,
   }
 }
