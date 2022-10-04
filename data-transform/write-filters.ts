@@ -50,7 +50,7 @@ function writeDocs(typeName: string, set: Set<string>) {
 function validateLogoImageDomains(domains: Set<string>) {
   if (
     domains.size !== 2 ||
-    !domains.has("80000hours.or") ||
+    !domains.has("80000hours.org") ||
     !domains.has("cdn.80000hours.org")
   ) {
     throw new Error(
