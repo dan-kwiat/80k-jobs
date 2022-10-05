@@ -77,7 +77,6 @@ export function indexQuery({
     .map((x) => `"${x}*"`)
     .join(", ")}] && date_it_closes >= '${today}'`
 
-  console.log(filterString)
   filterString += getFilterStringScalar(
     filters,
     "experience",
@@ -93,5 +92,14 @@ export function indexQuery({
   filterString += getFilterStringArray(filters, "location", "countries")
   filterString += getFilterStringArray(filters, "role", "roles")
 
-  return `*[${filterString}] | order(date_it_closes asc, date_published desc) { ${jobFields} }[0..$limit-1]`
+  let scoreFunc = `score(
+    boost(title match "${searchText}", 5),
+    boost(description[].children[].text match "${searchText}", 4),
+    boost(org match "${searchText}", 3),
+    boost(role_type match "${searchText}", 1),
+    boost(problem_areas match "${searchText}", 1),
+    boost(location match "${searchText}", 1)
+  )`
+
+  return `*[${filterString}] | ${scoreFunc} | order(_score desc, date_it_closes asc, date_published desc) { _score, ${jobFields} }[0..$limit-1]`
 }
